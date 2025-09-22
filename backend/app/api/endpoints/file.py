@@ -1,9 +1,10 @@
 from typing import Any
-from fastapi import APIRouter, Depends, UploadFile, File, HTTPException, status
+from fastapi import APIRouter, Depends, UploadFile, File
 from sqlalchemy.orm import Session
+
 from app import services
 from app.schemas.file import File as FileSchema
-from app.db.session import get_db
+from app.api.deps import get_db
 
 
 router = APIRouter()
