@@ -1,0 +1,21 @@
+# version: "3.8"
+
+services:
+  # 백엔드 서비스 정의
+  backend:
+    build:
+      context: ./backend # ./backend 폴더의 Dockerfile을 사용
+    ports:
+      - "8000:8000" # 내 컴퓨터 8000번 포트와 컨테이너 8000번 포트 연결
+    volumes:
+      - ./backend:/app # 로컬 backend 폴더와 컨테이너 /app 폴더를 실시간 동기화
+
+  # 프론트엔드 서비스 정의
+  frontend:
+    build:
+      context: ./frontend # ./frontend 폴더의 Dockerfile을 사용
+    ports:
+      - "5173:5173" # 내 컴퓨터 5173번 포트와 컨테이너 5173번 포트 연결
+    volumes:
+      - ./frontend:/app # 로컬 frontend 폴더와 컨테이너 /app 폴더를 실시간 동기화
+      - /app/node_modules # node_modules는 동기화에서 제외
