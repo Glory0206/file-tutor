@@ -1,6 +1,10 @@
 from sqlalchemy.orm import Session
+from typing import Optional
 
 from app import models, schemas
+
+def get(db: Session, id: int) -> Optional[models.File]:
+    return db.query(models.File).filter(models.File.id == id).first()
 
 def create_user_file(*, db: Session, file_in: schemas.FileCreate, owner_id: int) -> models.File:
     # 파일 등록
