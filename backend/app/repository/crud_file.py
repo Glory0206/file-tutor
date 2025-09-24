@@ -1,10 +1,13 @@
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, List
 
 from app import models, schemas
 
 def get(db: Session, id: int) -> Optional[models.File]:
     return db.query(models.File).filter(models.File.id == id).first()
+
+def get_multi(db: Session, skip: int = 0, limit: int = 100) -> List[models.File]:
+    return db.query(models.File).offset(skip).limit(limit).all()
 
 def create_user_file(*, db: Session, file_in: schemas.FileCreate, owner_id: int) -> models.File:
     # 파일 등록

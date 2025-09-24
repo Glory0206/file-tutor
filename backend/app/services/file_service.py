@@ -8,6 +8,10 @@ from app import models, schemas, repository
 
 UPLOAD_DIRECTORY = "./uploads"
 
+def get_files(db: Session, skip: int = 0, limit: int = 100):
+    return repository.crud_file.get_multi(db=db, skip=skip, limit=limit)
+
+
 async def save_upload_file(*, db: Session, file: UploadFile, user_id: int) -> models.File:
     os.makedirs(UPLOAD_DIRECTORY, exist_ok=True)
 
