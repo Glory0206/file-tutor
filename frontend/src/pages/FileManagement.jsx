@@ -19,7 +19,7 @@ function FileManagement() {
         const formattedFiles = response.data.map((file) => ({
           id: file.id,
           name: file.filename,
-          path: file.file_path,
+          url: file.url,
           date: new Date().toLocaleDateString(), // 임시 날짜
         }));
         setFiles(formattedFiles);

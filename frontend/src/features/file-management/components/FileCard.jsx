@@ -1,16 +1,16 @@
 import { Card } from "react-bootstrap";
 
 function FileCard({ file }) {
-  // 카드 이미지를 클릭했을 때 실행될 함수입니다.
-  const handleImageClick = () => {
-    window.open(`/${file.path}`, "_blank");
+  const handleImageClick = (fileUrl) => {
+    console.log("Clicked URL:", fileUrl);
+    window.open(file.url, "_blank");
   };
 
   return (
     <Card className="h-100">
       {/* 파일 미리보기 이미지 */}
       <Card.Img
-        onClick={handleImageClick}
+        onClick={() => handleImageClick(file.url)}
         variant="top"
         src="/public/icons/excel.png"
         style={{ cursor: "pointer" }}
