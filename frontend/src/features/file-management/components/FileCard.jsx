@@ -1,10 +1,20 @@
 import { Card } from "react-bootstrap";
 
 function FileCard({ file }) {
+  const handleImageClick = (fileUrl) => {
+    console.log("Clicked URL:", fileUrl);
+    window.open(file.url, "_blank");
+  };
+
   return (
     <Card className="h-100">
       {/* 파일 미리보기 이미지 */}
-      <Card.Img variant="top" src={file.image} />
+      <Card.Img
+        onClick={() => handleImageClick(file.url)}
+        variant="top"
+        src="/public/icons/excel.png"
+        style={{ cursor: "pointer" }}
+      />
       <Card.Body>
         {/* 파일 이름 (이름이 길 경우 ...으로 표시) */}
         <Card.Title className="text-truncate">{file.name}</Card.Title>

@@ -1,16 +1,24 @@
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, List
 
 from app import models, schemas
 
 def get(db: Session, id: int) -> Optional[models.File]:
     return db.query(models.File).filter(models.File.id == id).first()
 
+def get_multi(db: Session, skip: int = 0, limit: int = 100, owner_id: int = None) -> List[models.File]:
+    query = db.query(models.File)
+
+    if owner_id is not None:
+        query = query.filter(models.File.owner_id == owner_id)
+
+    return query.offset(skip).limit(limit).all()
+
 def create_user_file(*, db: Session, file_in: schemas.FileCreate, owner_id: int) -> models.File:
     # 파일 등록
     db_obj = models.File(
         filename=file_in.filename,
-        file_path=file_in.file_path,
+        url=file_in.url,
         owner_id=owner_id,
     )
     db.add(db_obj)
