@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { Container, Row, Col, Button, Form, InputGroup } from "react-bootstrap";
 import axios from "axios";
 import FileCard from "../features/file-management/components/FileCard";
@@ -10,6 +10,12 @@ function FileManagement() {
 
   // 검색어 상태
   const [searchTerm, setSearchTerm] = useState("");
+
+  const fileInputRef = useRef(null);
+
+  const handleClick = () => {
+    fileInputRef.current.click();
+  };
 
   useEffect(() => {
     const fetchFiles = async () => {
@@ -23,8 +29,6 @@ function FileManagement() {
           date: new Date().toLocaleDateString(), // 임시 날짜
         }));
         setFiles(formattedFiles);
-        console.log("서버로부터 받은 데이터:", response.data);
-        console.log("가공된 데이터:", formattedFiles);
       } catch (error) {
         console.error("Error fetching files:", error);
       }
@@ -44,6 +48,35 @@ function FileManagement() {
     });
   }, [files, searchTerm]); // 의존성 배열
 
+  const handleFileChange = async (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    if (selectedFiles.length > 0) {
+      for (const file of selectedFiles) {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+          const response = await axios.post("/api/upload", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+
+          // 업로드 성공하면 목록에 추가
+          setFiles((prevFiles) => [
+            ...prevFiles,
+            {
+              id: response.data.id,
+              name: response.data.filename,
+              url: response.data.url,
+              date: new Date().toLocaleDateString(),
+            },
+          ]);
+        } catch (error) {
+          console.error("업로드 실패:", error);
+        }
+      }
+    }
+  };
+
   return (
     <Container fluid>
       {/* 메인 컨텐츠 영역 */}
@@ -52,7 +85,15 @@ function FileManagement() {
         <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
           <h1 className="h2">내 파일</h1>
           <div className="btn-toolbar mb-2 mb-md-0">
-            <Button variant="primary">
+            <input
+              type="file"
+              style={{ display: "none" }}
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              multiple={true}
+              accept=".csv, .xlsx, .xls"
+            />
+            <Button variant="primary" onClick={handleClick}>
               <Upload className="me-2" />
               Upload File
             </Button>
