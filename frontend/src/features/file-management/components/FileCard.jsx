@@ -1,16 +1,18 @@
 import { Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 function FileCard({ file }) {
-  const handleImageClick = (fileUrl) => {
-    console.log("Clicked URL:", fileUrl);
-    window.open(file.url, "_blank");
+  const navigate = useNavigate();
+
+  const handleImageClick = () => {
+    navigate(`/chat/${file.id}`);
   };
 
   return (
     <Card className="h-100">
       {/* 파일 미리보기 이미지 */}
       <Card.Img
-        onClick={() => handleImageClick(file.url)}
+        onClick={handleImageClick}
         variant="top"
         src="/public/icons/excel.png"
         style={{ cursor: "pointer" }}

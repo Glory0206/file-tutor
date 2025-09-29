@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form, Button, InputGroup, Image } from "react-bootstrap";
 
-export function MessageInput() {
+export function MessageInput({ onSendMessage }) {
+  const [text, setText] = useState("");
+
+  const handleSend = () => {
+    if (text.trim()) {
+      onSendMessage(text);
+      setText("");
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleSend();
+    }
+  };
+
   return (
     <footer className="bg-light border-top p-3">
       <div className="d-flex align-items-center gap-3">
@@ -13,14 +28,16 @@ export function MessageInput() {
         />
         <InputGroup>
           <Form.Control
-            placeholder="Type your message..."
+            placeholder="무엇이든 물어보세요"
             aria-label="Type your message..."
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyPress={handleKeyPress}
           />
-          <Button variant="outline-secondary">
-            {/* <AttachmentIcon /> */}
-            📎
+          <Button variant="outline-secondary">📎</Button>
+          <Button variant="primary" onClick={handleSend}>
+            Send
           </Button>
-          <Button variant="primary">Send</Button>
         </InputGroup>
       </div>
     </footer>

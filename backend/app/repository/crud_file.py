@@ -19,6 +19,7 @@ def create_user_file(*, db: Session, file_in: schemas.FileCreate, owner_id: int)
     db_obj = models.File(
         filename=file_in.filename,
         url=file_in.url,
+        file_path=file_in.file_path,
         owner_id=owner_id,
     )
     db.add(db_obj)

@@ -32,6 +32,6 @@ async def save_upload_file(*, db: Session, file: UploadFile, user_id: int) -> mo
     # URL 생성
     file_url = f"{BASE_URL}/{unique_filename}"
 
-    file_in = schemas.FileCreate(filename=original_filename, url=file_url)
+    file_in = schemas.FileCreate(filename=original_filename, url=file_url, file_path=file_path)
 
     return repository.crud_file.create_user_file(db=db, file_in=file_in, owner_id=user_id)

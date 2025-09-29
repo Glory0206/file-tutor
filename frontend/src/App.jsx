@@ -6,11 +6,18 @@ import FileManagement from "./pages/FileManagement";
 function App() {
   return (
     <BrowserRouter>
-      <Header />
-      <Routes>
-        <Route path="/chat" element={<ChatPage />} />
-        <Route path="/files" element={<FileManagement />} />
-      </Routes>
+      <div
+        style={{ display: "flex", flexDirection: "column", height: "100vh" }}
+      >
+        <Header />
+        <main style={{ flex: 1, overflowY: "auto" }}>
+          <Routes>
+            <Route path="/chat/:fileId" element={<ChatPage />} />
+            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/files" element={<FileManagement />} />
+          </Routes>
+        </main>
+      </div>
     </BrowserRouter>
   );
 }
