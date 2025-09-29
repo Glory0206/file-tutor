@@ -10,7 +10,7 @@ router = APIRouter()
 @router.post("/chat/{file_id}")
 async def handle_chat(
     file_id: int,
-    query: str,
+    question: str,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
@@ -20,6 +20,6 @@ async def handle_chat(
     
     file_path = db_file.file_path
 
-    answer = agent_service.excel_agent(file_path, query)
+    answer = agent_service.excel_agent(file_path, question)
 
     return {"answer": answer}

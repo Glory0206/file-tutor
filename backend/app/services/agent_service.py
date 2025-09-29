@@ -1,5 +1,4 @@
 import pandas as pd
-import traceback
 from fastapi import HTTPException
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe_agent
@@ -7,14 +6,14 @@ from langchain_experimental.agents.agent_toolkits import create_pandas_dataframe
 from app.core.config import settings
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-pro-latest",
+    model="gemini-2.5-pro",
     temperature=0,
     google_api_key=settings.GOOGLE_API_KEY,
     convert_system_message_to_human=True
 )
 
-def excel_agent(file_path: str, query: str) -> str:
-    print(f"사용자 질문: {query}")
+def excel_agent(file_path: str, question: str) -> str:
+    print(f"사용자 질문: {question}")
     try:
         df = pd.read_excel(file_path)
     except FileNotFoundError:
@@ -27,10 +26,11 @@ def excel_agent(file_path: str, query: str) -> str:
         agent = create_pandas_dataframe_agent(
             llm=llm,
             df=df, verbose=True,
-            agent_executor_kwargs={"handle_parsing_errors": True}, # 파싱 에러 발생 시 재시도)
+            agent_executor_kwargs={"handle_parsing_errors": False}, # 파싱 에러 발생 시 재시도)
             allow_dangerous_code=True
         )
-        result = agent.invoke({"input": query})
+
+        result = agent.invoke({"input": question})
 
         return result.get("output", "죄송합니다. 질문에 대한 답변을 생성하지 못했습니다.")
     except Exception as e:
