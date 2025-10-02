@@ -11,7 +11,17 @@ class Settings(BaseSettings):
 
     # Google API 키
     GOOGLE_API_KEY: str
-    
+
+    # JWT
+    JWT_SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUITES: int = 30
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 60 * 24 * 7
+
+    # Redis
+    REDIS_HOST: str
+    REDIS_PORT: int
+
     @property
     def DATABASE_URL(self) -> str:
         return(

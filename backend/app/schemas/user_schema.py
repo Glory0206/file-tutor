@@ -14,6 +14,7 @@ class User(UserBase):
     id: int
     email: EmailStr
 
-    class Config:
-        orm_mode = True
+    model_config = {
+        "from_attributes": True
+    }
 

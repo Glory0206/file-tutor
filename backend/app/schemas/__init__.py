@@ -1,2 +1,2 @@
-from .file import File, FileCreate
-from .user import User, UserCreate, UserBase
+from .file_schema import File, FileCreate
+from .user_schema import User, UserCreate, UserBase

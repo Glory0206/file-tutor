@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, UploadFile, File
 from sqlalchemy.orm import Session
 
 from app import services
-from app.schemas.file import File as FileSchema
+from app.schemas.file_schema import File as FileSchema
 from app.api.deps import get_db
 
 
