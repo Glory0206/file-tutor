@@ -30,4 +30,5 @@ def create_refresh_token(data: dict) -> str:
     return encoded_jwt
 
 async def store_refresh_token(redis: Redis, email: str, refresh_token: str):
-    await redis.set(f"refresh_token:{email}", refresh_token, ex=timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS))
+    expire_seconds = int(timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS).total_seconds())
+    await redis.set(f"refresh_token:{email}", refresh_token, ex=expire_seconds)

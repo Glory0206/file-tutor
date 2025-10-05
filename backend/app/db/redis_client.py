@@ -8,9 +8,9 @@ redis_pool = redis.ConnectionPool.from_url(
 )
 
 # FastAPI Dependency로 사용할 수 있도록 함수 정의
-async def get_redis():
-    """
-    Redis 연결을 제공하는 Dependency
-    """
-    async with redis.Redis.from_pool(redis_pool) as client:
+async def get_redis() -> redis.Redis:
+    client = redis.Redis(connection_pool=redis_pool)
+    try:
         yield client
+    finally:
+        await client.close()
