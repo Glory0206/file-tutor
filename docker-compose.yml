@@ -1,13 +1,26 @@
-
 services:
   # 백엔드 서비스 정의
-  # backend:
-  #   build:
-  #     context: ./backend # ./backend 폴더의 Dockerfile을 사용
-  #   ports:
-  #     - "8000:8000" # 내 컴퓨터 8000번 포트와 컨테이너 8000번 포트 연결
-  #   volumes:
-  #     - ./backend:/app # 로컬 backend 폴더와 컨테이너 /app 폴더를 실시간 동기화
+  backend:
+    build:
+      context: ./backend # ./backend 폴더의 Dockerfile을 사용
+    ports:
+      - "8000:8000" # 내 컴퓨터 8000번 포트와 컨테이너 8000번 포트 연결
+    volumes:
+      - ./backend:/app # 로컬 backend 폴더와 컨테이너 /app 폴더를 실시간 동기화
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+    ports:
+      - "5432:5432"
 
   # 프론트엔드 서비스 정의
   frontend:
@@ -24,3 +37,6 @@ services:
     image: redis:latest
     ports:
       - "6379:6379"
+
+volumes:
+  postgres_data:
