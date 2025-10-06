@@ -4,13 +4,13 @@ import aiofiles
 from sqlalchemy.orm import Session
 
 from fastapi import UploadFile
-from app import models, schemas, repository
+from app import models, schemas, crud
 
 UPLOAD_DIRECTORY = "./uploads"
 BASE_URL = "http://localhost:8000/uploads"
 
 def get_files(db: Session, skip: int = 0, limit: int = 100, owner_id: int = None):
-    return repository.crud_file.get_multi(db=db, skip=skip, limit=limit, owner_id=owner_id)
+    return crud.crud_file.get_multi(db=db, skip=skip, limit=limit, owner_id=owner_id)
 
 
 async def save_upload_file(*, db: Session, file: UploadFile, user_id: int) -> models.File:
@@ -34,4 +34,4 @@ async def save_upload_file(*, db: Session, file: UploadFile, user_id: int) -> mo
 
     file_in = schemas.FileCreate(filename=original_filename, url=file_url, file_path=file_path)
 
-    return repository.crud_file.create_user_file(db=db, file_in=file_in, owner_id=user_id)
+    return crud.crud_file.create_user_file(db=db, file_in=file_in, owner_id=user_id)

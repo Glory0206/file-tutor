@@ -3,7 +3,8 @@ from fastapi import APIRouter, Depends, UploadFile, File
 from sqlalchemy.orm import Session
 
 from app import services
-from app.schemas.file import File as FileSchema
+from app.schemas.file_schema import File as FileSchema
+from app.api.deps import get_current_user
 from app.api.deps import get_db
 
 
@@ -24,7 +25,7 @@ async def upload_file(
     *,
     db: Session = Depends(get_db),
     file: UploadFile = File(...),
-    current_user_id: int = 1
+    current_user_id: int
 ) -> Any:
     saved_file = await services.file_service.save_upload_file(
         db=db, file=file, user_id=current_user_id

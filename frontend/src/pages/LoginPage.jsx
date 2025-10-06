@@ -1,14 +1,40 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import axiosInstance from "../api/axios";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Email:", email, "Password:", password);
+    setError("");
+
+    const formData = new URLSearchParams();
+    formData.append("username", email);
+    formData.append("password", password);
+
+    try {
+      const response = await axiosInstance.post("/api/auth/login", formData, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+      });
+
+      const { access_token } = response.data;
+      localStorage.setItem("accessToken", access_token);
+
+      navigate("/files");
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setError(error.response.data.detail || "로그인에 실패했습니다.");
+      } else {
+        setError("서버에 연결할 수 없습니다.");
+      }
+    }
   };
 
   return (

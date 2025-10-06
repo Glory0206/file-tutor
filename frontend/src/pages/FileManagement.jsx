@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { Container, Row, Col, Button, Form, InputGroup } from "react-bootstrap";
-import axios from "axios";
+import axiosInstance from "../api/axios";
 import FileCard from "../features/file-management/components/FileCard";
 
 import { Search, Upload } from "react-bootstrap-icons";
@@ -20,7 +20,7 @@ function FileManagement() {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await axios.get("/api/files");
+        const response = await axiosInstance.get("/api/files");
         // 1. API 응답 데이터를 프론트엔드에서 사용하기 좋은 형태로 가공합니다.
         const formattedFiles = response.data.map((file) => ({
           id: file.id,
@@ -56,7 +56,7 @@ function FileManagement() {
         formData.append("file", file);
 
         try {
-          const response = await axios.post("/api/upload", formData, {
+          const response = await axiosInstance.post("/api/upload", formData, {
             headers: { "Content-Type": "multipart/form-data" },
           });
 
