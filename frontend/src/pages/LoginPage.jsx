@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
-import axios from "axios";
+import axiosInstance from "../api/axios";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ const LoginPage = () => {
     formData.append("password", password);
 
     try {
-      const response = await axios.post("/api/auth/login", formData, {
+      const response = await axiosInstance.post("/api/auth/login", formData, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },

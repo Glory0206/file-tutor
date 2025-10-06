@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axiosInstance from "../api/axios";
 import { ChatMessage } from "../features/chat/components/ChatMessage";
 import { MessageInput } from "../features/chat/components/MessageInput";
 
@@ -22,7 +22,7 @@ export function ChatPage() {
   useEffect(() => {
     const fetchFiles = async () => {
       try {
-        const response = await axios.get("/api/files");
+        const response = await axiosInstance.get("/api/files");
         setFiles(response.data || []);
       } catch (error) {
         console.error("Error fetching files:", error);
@@ -53,7 +53,7 @@ export function ChatPage() {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
 
     try {
-      const response = await axios.post(`/api/chat/${fileId}?question=${text}`);
+      const response = await axiosInstance.post(`/api/chat/${fileId}?question=${text}`);
 
       const botMessage = {
         id: messages.length + 2,

@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response, Cookie
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from redis.asyncio import Redis
@@ -22,6 +22,7 @@ async def signup( user_create: UserCreate, db: Session = Depends(deps.get_db)):
 
 @router.post("/login", response_model=Token)
 async def login(
+    response: Response,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
     redis: Annotated[Redis, Depends(get_redis)],
     db: Session = Depends(deps.get_db),
@@ -40,4 +41,34 @@ async def login(
     # Redis 함수 호출
     await auth_service.store_refresh_token(redis, user.email, refresh_token)
 
+    # HttpOnly 쿠키
+    response.set_cookie(
+        key="refresh_token",
+        value=refresh_token,
+        httponly=True,
+        # secure=True, # 배포 시에는 True로 설정하여 https에서만 전송되도록
+        # samesite="strict", # CSRF 방어
+        max_age=60*60*24*7
+    )
+
     return {"access_token": access_token}
+
+@router.post("/refresh", response_model=Token)
+async def refresh(
+    response: Response,
+    refresh_token: Annotated[str | None, Cookie()] = None,
+    redis: Annotated[Redis, Depends(get_redis)] = None,
+):
+    if refresh_token is None:
+         raise HTTPException(status_code=401, detail="refresh token이 없습니다.")
+    
+    new_access_token, new_refresh_token = await auth_service.refresh_access_token(redis, refresh_token)
+
+    response.set_cookie(
+        key="refresh_token",
+        value=new_refresh_token,
+        httponly=True,
+        max_age=60*60*24*7
+    )
+    
+    return {"access_token": new_access_token}
